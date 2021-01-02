@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>成绩查询</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../static/manage.css">
+</head>
+<body class="layui-layout-body" style="overflow: hidden">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">课程管理系统</div>
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item">欢迎</li>
+            <li class="layui-nav-item" th:text="${type}" id="user_type" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe67a;</i></li>
+            <li class="layui-nav-item" th:text="${id}" id="user_id" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe67a;</i></li>
+            <li class="layui-nav-item" th:text="${t}" id="user_name" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe68e;</i></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><a onclick="msg()"><i class="layui-icon">&#xe667;</i> 消息</a></li>
+            <li class="layui-nav-item"><a href="/index"><i class="layui-icon">&#xe682;</i> 退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test" id="option">
+                <li class="layui-nav-item"></li><a th:href="@{tomanage(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  选课管理</a></li>
+                <li class="layui-nav-item"></li><a th:href="@{tosearch(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  成绩查询</a></li>
+                <li class="layui-nav-item"></li><a th:href="@{toChangePwd2(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  账号管理</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" id="contextbody">
+        <!-- 内容主体区域 -->
+        <div style="margin-top: 30px"></div>
+        <form class="layui-form">
+            <h1 class="layui-form-item" style="text-align: center">查询课程</h1>
+            <div class="layui-form-item">
+                <label class="layui-form-label">课程名：</label>
+                <div class="layui-input-block">
+                    <input type="text" id="name" name="name" autocomplete="off" placeholder="输入课程名称查询课程" required class="layui-input">
+                </div>
+            </div>
+        </form>
+        <div class="layui-btn-container">
+            <button id ="btn" class="layui-btn layui-btn-fluid layui-btn-radius">提交</button>
+            <button id ="btn2" class="layui-btn layui-btn-fluid layui-btn-radius">查询所有课程成绩</button>
+        </div>
+        <div style="margin-top: 30px"></div>
+        <h2>已获得学分：<p th:text="${scredit}"></p></h2>
+
+        <table lay-filter="table">
+            <thead>
+            <tr>
+                <th lay-data="{type: 'checkbox', fixed: 'left'}"></th>
+                <th lay-data="{field:'id'}">课程号</th>
+                <th lay-data="{field:'class_name'}">课程名</th>
+                <th lay-data="{field:'teacher_name'}">教师姓名</th>
+                <th lay-data="{field:'teacher_id'}">教师工号</th>
+                <th lay-data="{field:'department'}">院系</th>
+                <th lay-data="{field:'term',sort:true}">学期</th>
+                <th lay-data="{field:'time',sort:true}">时间</th>
+                <th lay-data="{field:'type',sort: true}">课程属性</th>
+                <th lay-data="{field:'credit'}">学分</th>
+                <th lay-data="{field:'grade',sort:true}">成绩</th>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each = "c : ${res}">
+                <td></td>
+                <td th:text = "${c.id}"></td>
+                <td th:text = "${c.class_name}"></td>
+                <td th:text = "${c.teacher_name}"></td>
+                <td th:text = "${c.teacher_id}"></td>
+                <td th:text = "${c.department}"></td>
+                <td th:text = "${c.term}"></td>
+                <td th:text = "${c.time}"></td>
+                <td th:text = "${c.type}"></td>
+                <td th:text = "${c.credit}"></td>
+                <td th:text = "${c.grade}"></td>
+
+            </tr>
+            </tbody>
+        </table>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                
+            </div>
+        </script>
+
+
+    </div>
+
+    <div class="layui-footer">
+
+    </div>
+</div>
+</body>
+
+
+<div id = "msg" style="width: 350px;height: 700px">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">接收者编号</label>
+            <div class="layui-input-block">
+                <input type="text" name="text" id = "text" required class="layui-input">
+            </div>
+        </div>
+    </form>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">文本</label>
+        <div class="layui-input-block">
+            <textarea id="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <button class="layui-btn" style="margin-left: 30px" id="send">发送消息</button>
+    <button class="layui-btn" id="receive">接收消息</button>
+    <table id="msgtab" class="layui-table">
+        <thead>
+        <tr>
+            <th>发送者</th>
+            <th>时间</th>
+            <th>内容</th>
+        </tr>
+        </thead>
+        <tbody id="tab"></tbody>
+    </table>
+</div>
+
+
+<script src="../static/layui/layui.js"></script>
+<script src="../static/jquery-3.5.1.js"></script>
+<script>
+    $(document).ready(function (){
+        $("#msg").hide();
+    })
+    layui.use(["form","table","layer"],function () {
+        var table = layui.table;
+        var layer = layui.layer;
+
+        table.init('table', {
+            height: 600
+            , limit: 100
+            , page: true //开启分页
+            , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            , defaultToolbar: ['filter', 'exports', 'print']
+        });
+    })
+    $("#btn2").click(function (){
+        var type = $("#user_type").text();
+        var id = $("#user_id").text();
+        var t = $("#user_name").text();
+        window.location.href = "/findGradeBySid?type="+type+"&id="+id+"&t="+t;
+    })
+
+    $("#btn").click(function (){
+        var name = $("#name").val();
+        var type = $("#user_type").text();
+        var id = $("#user_id").text();
+        var t = $("#user_name").text();
+        window.location.href = "/findGradeBySidAndName?className="+name+"&type="+type+"&id="+id+"&t="+t;
+    })
+
+    function msg(){
+        var layer = layui.layer;
+        layer.open({
+            title : "消息",
+            type : 1,
+            content : $("#msg"),
+            offset:'r',
+            shade : 0
+        })
+    }
+    $("#send").click(function (){
+        var receiver_id = $("#text").val();
+        var text = $("#desc").val();
+        var id = $("#user_id").text();
+        $.ajax({
+            url:"addmsg",
+            data : {
+                "r_id" : receiver_id,
+                "text" : text,
+                "sid" : id
+            },
+            success: function (data){
+                alert(data);
+            }
+        })
+    })
+    $("#receive").click(function (){
+        var id = $("#user_id").text();
+        $.ajax({
+            url:"receive_msg",
+            data : {
+                "id" : id
+            },
+            success: function (data){
+                //alert(data[0]["sender"]);
+                var s ="";
+                for(var i = 0; i<data.length; i++){
+                    s+= "<tr><td>"+data[i]["sender"]+"</td><td>"+data[i]["time"]+"</td><td>"+data[i]["msg"]+"</td></tr>"
+                }
+                $("#tab").html(s);
+                var laytab = layui.table;
+                laytab.render();
+            }
+        })
+    })
+
+</script>
+</html>

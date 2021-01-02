@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学生成绩管理</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+</head>
+<body class="layui-layout-body" style="overflow: hidden">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">课程管理系统</div>
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item">欢迎</li>
+            <li class="layui-nav-item" th:text="${type}" id="user_type" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe67a;</i></li>
+            <li class="layui-nav-item" th:text="${id}" id="user_id" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe67a;</i></li>
+            <li class="layui-nav-item" th:text="${t}" id="user_name" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe68e;</i></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><a onclick="msg()"><i class="layui-icon">&#xe667;</i> 消息</a></li>
+            <li class="layui-nav-item"><a href="/index"><i class="layui-icon">&#xe682;</i> 退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test" id="option">
+                <li class="layui-nav-item"></li><a th:href="@{teacher(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  课程发布</a></li>
+                <li class="layui-nav-item"></li><a th:href="@{tosetGrade(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  课程成绩</a></li>
+                <li class="layui-nav-item"></li><a th:href="@{toChangePwd(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  账号管理</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" id="contextbody">
+        <!-- 内容主体区域 -->
+        <button id ="class_btn" class="layui-btn layui-btn-fluid" style="margin-top: 50px">查询所教授课程</button>
+        <h2 style="margin-top: 20px;text-align: center;color:red">导出的excel文件请重新保存后上传</h2>
+
+        <input type="file" multiple name="file_0" id="input-file" style="display: none;">
+        <div class="layui-btn-group" style="width: 100%">
+        <button id ="file" class="layui-btn layui-btn-fluid "><i class="layui-icon">&#xe67c;</i>选择excel文件</button>
+        <button id ="uploadfile" class="layui-btn layui-btn-fluid"><i class="layui-icon">&#xe67c;</i>上传</button>
+    </div>
+            <table lay-filter="table">
+                <thead>
+                <tr>
+                    <th lay-data="{type: 'checkbox', fixed: 'left'}"></th>
+                    <th lay-data="{field:'class_id'}">课程号</th>
+                    <th lay-data="{field:'student_name'}">学生姓名</th>
+                    <th lay-data="{field:'student_id'}">学生学号</th>
+                    <th lay-data="{field:'credit'}">学分</th>
+                    <th lay-data="{field:'grade'}">成绩</th>
+                    <th lay-data="{fixed: 'right', title:'操作', toolbar: '#bar', width:200}"></th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each = "c : ${res}">
+                    <td></td>
+                    <td th:text = "${c.class_id}"></td>
+                    <td th:text = "${c.student_name}"></td>
+                    <td th:text = "${c.student_id}"></td>
+                    <td th:text = "${credit}" id ="credit"></td>
+                    <td th:text = "${c.grade}"></td>
+
+                </tr>
+                </tbody>
+            </table>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+                <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+            </div>
+        </script>
+        <script type="text/html" id="bar">
+            <a class="layui-btn layui-btn-xs" lay-event="setgrade">修改成绩</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除学生</a>
+        </script>
+        <div class="layui-footer">
+
+        </div>
+    </div>
+</div>
+</body>
+
+<div id = "msg" style="width: 350px;height: 700px">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">接收者编号</label>
+            <div class="layui-input-block">
+                <input type="text" name="text" id = "text" required class="layui-input">
+            </div>
+        </div>
+    </form>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">文本</label>
+        <div class="layui-input-block">
+            <textarea id="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <button class="layui-btn" style="margin-left: 30px" id="send">发送消息</button>
+    <button class="layui-btn" id="receive">接收消息</button>
+    <table id="msgtab" class="layui-table">
+        <thead>
+        <tr>
+            <th>发送者</th>
+            <th>时间</th>
+            <th>内容</th>
+        </tr>
+        </thead>
+        <tbody id="tab"></tbody>
+    </table>
+</div>
+
+
+    <script src="../static/layui/layui.js"></script>
+    <script src="../static/jquery-3.5.1.js"></script>
+    <script>
+        $(document).ready(function (){
+            $("#msg").hide();
+        })
+        layui.use(["form","table","layer","upload"],function () {
+            var table = layui.table;
+            var layer = layui.layer;
+
+            table.init('table', {
+                height: 488
+                , limit: 100
+                , page: true //开启分页
+                , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+                , defaultToolbar: ['filter', 'exports']
+            });
+
+            table.on('toolbar(table)', function(obj){
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch(obj.event){
+                    case 'getCheckLength':
+                        var data = checkStatus.data;
+                        layer.msg('选中了：'+ data.length + ' 个');
+                        break;
+                    case 'isAll':
+                        layer.msg(checkStatus.isAll ? '全选': '未全选');
+                        break;
+
+                };
+            });
+            table.on('tool(table)',function (obj){
+                if (obj.event == 'setgrade') {
+                    var data = obj.data;
+                    layer.prompt({title: "输入0-100之间的成绩数值"}, function (value, index, elem) {
+                        var re = /^[0-9]+.?[0-9]*$/;
+                        if (!re.test(value)) {
+                            alert("请输入数字");
+                            return;
+                        }
+                        var type = $("#user_type").text();
+                        var id = $("#user_id").text();
+                        var t = $("#user_name").text();
+                        var credit = $("#credit").text();
+                        console.log(credit);
+                        $.ajax({
+                            url: "setGrade",
+                            data: {
+                                "type": type,
+                                "id": id,
+                                "t": t,
+                                "class_id": data.class_id,
+                                "student_id": data.student_id,
+                                "grade": value,
+                                "credit" : credit
+                            },
+                            success: function (data) {
+                                alert(data);
+                                if (data == "成功")
+                                    obj.update({
+                                        grade: value
+                                    })
+                            }
+                        })
+                        layer.close(index);
+                    });
+                }
+                else if (obj.event == 'delete'){
+                    layer.prompt({title:"确认删除请输入代码"},function (value,index,elem){
+                        var data = obj.data;
+                        $.ajax({
+                            url : "deleteStudent",
+                            data : {
+                                "class_id" : data.class_id,
+                                "student_id" : data.student_id,
+                                "code" : value
+                            },
+                            success :function (data){
+                                alert(data);
+                                if(data == '成功')
+                                    obj.del();
+                                layer.close(index);
+                            }
+                        })
+
+                    })
+                }
+            })
+
+
+
+
+
+        });
+        $("#class_btn").click(function (){
+            var type = $("#user_type").text();
+            var id = $("#user_id").text();
+            var t = $("#user_name").text();
+            window.location.href = "/findClassesByTeacher_id?type="+type+"&id="+id+"&t="+t;
+        })
+
+
+        function msg(){
+            var layer = layui.layer;
+            layer.open({
+                title : "消息",
+                type : 1,
+                content : $("#msg"),
+                offset:'r',
+                shade : 0
+            })
+        }
+        $("#send").click(function (){
+            var receiver_id = $("#text").val();
+            var text = $("#desc").val();
+            var id = $("#user_id").text();
+            $.ajax({
+                url:"addmsg",
+                data : {
+                    "r_id" : receiver_id,
+                    "text" : text,
+                    "sid" : id
+                },
+                success: function (data){
+                    alert(data);
+                }
+            })
+        })
+        $("#receive").click(function (){
+            var id = $("#user_id").text();
+            $.ajax({
+                url:"receive_msg",
+                data : {
+                    "id" : id
+                },
+                success: function (data){
+                    //alert(data[0]["sender"]);
+                    var s ="";
+                    for(var i = 0; i<data.length; i++){
+                        s+= "<tr><td>"+data[i]["sender"]+"</td><td>"+data[i]["time"]+"</td><td>"+data[i]["msg"]+"</td></tr>"
+                    }
+                    $("#tab").html(s);
+                    var laytab = layui.table;
+                    laytab.render();
+                }
+            })
+        })
+
+
+
+        /*判断文件类型*/
+        function isExcel(){
+            var fileInput = document.getElementById("input-file").value;
+            //判断文件是否为空
+            if (fileInput == null || fileInput.trim() == ''){
+                //layer.msg('请上传文件！');
+                return false;
+            }else {
+                //判断文件是否为excel文件
+                var reg =/^.*\.(?:xls|xlsx)$/;
+                if (!reg.test(fileInput)){
+                    //layer.msg('请上传Excel文件！');
+                    return false;
+                }else {
+                    return true;
+                }
+            }
+        }
+        /*文件上传*/
+        function uplaodFile() {
+            //当文件符合标准的时候才上传
+            if (isExcel()){
+                //将上传组件添加进临时表单
+                var form = new FormData();
+                form.append("file", document.getElementById("input-file").files[0]);
+                form.append("credit",$("#credit").text());
+                //提交表单
+                $.ajax({
+                    url: "/upload",
+                    data: form,
+                    cache: false,
+                    async: false,
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        alert(data);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        alert("上传失败！");
+                    }
+                });
+            }
+        }
+    $("#file").click(function (){
+        $("#input-file").click();
+    })
+        $("#uploadfile").click(function (){
+            uplaodFile();
+        })
+    </script>
+</html>

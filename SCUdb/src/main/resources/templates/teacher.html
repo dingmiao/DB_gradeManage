@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>manage</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../static/manage.css">
+</head>
+<body class="layui-layout-body" style="overflow: hidden">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">课程管理系统</div>
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item">欢迎</li>
+            <li class="layui-nav-item" th:text="${type}" id="user_type" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe67a;</i></li>
+            <li class="layui-nav-item" th:text="${id}" id="user_id" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe67a;</i></li>
+            <li class="layui-nav-item" th:text="${t}" id="user_name" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe68e;</i></li>
+        </ul>&#xe667;
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><a onclick="annonce()"><i class="layui-icon">&#xe645;</i> 课程公告</a></li>
+            <li class="layui-nav-item"><a onclick="msg()"><i class="layui-icon">&#xe667;</i> 消息</a></li>
+            <li class="layui-nav-item"><a href="/index"><i class="layui-icon">&#xe682;</i> 退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test" id="option">
+                <li class="layui-nav-item"></li><a th:href="@{teacher(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  课程发布</a></li>
+                <li class="layui-nav-item"></li><a th:href="@{tosetGrade(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  课程成绩</a></li>
+                <li class="layui-nav-item"></li><a th:href="@{toChangePwd(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  账号管理</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" id="contextbody">
+        <!-- 内容主体区域 -->
+        <div style="margin-top: 80px"></div>
+        <h2 style="text-align: center">课程发布</h2>
+        <form class ="layui-form">
+            <div class="layui-form-item">
+                <label class ="layui-form-label">课程名</label>
+                <div class="layui-input-block">
+                    <input type="text" id="name" name="name" autocomplete="off" placeholder="请输入课程名" required class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class ="layui-form-label">院系</label>
+                <div class="layui-input-block">
+                    <input type="text" id="department" name="department" autocomplete="off" placeholder="请输入院系" required class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class ="layui-form-label">学期</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" placeholder="年份" id="year">
+                    <select name = "term" id ="term">
+                       <option value="spring" selected>春季</option>
+                       <option value="autumn">秋季</option>
+                   </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class ="layui-form-label">时间</label>
+                <div class="layui-input-inline">
+                    <select name = "week" id ="week">
+                        <option value="Monday" selected>周一</option>
+                        <option value="Tuesday">周二</option>
+                        <option value="Wednesday">周三</option>
+                        <option value="Thursday">周四</option>
+                        <option value="Friday">周五</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name = "time" id ="time">
+                        <option value="1st" selected>第一大节</option>
+                        <option value="2rd">第二大节</option>
+                        <option value="3th">第三大节</option>
+                        <option value="4th">第四大节</option>
+                        <option value="5th">第五大节</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class ="layui-form-label">教室</label>
+                <div class="layui-input-block">
+                    <input type="text" id="classroom" name="classroom" autocomplete="off" placeholder="请输入教室" required class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class ="layui-form-label">课程属性</label>
+                <div class="layui-input-inline">
+                    <select name = "class_type" id ="class_type">
+                        <option value="必修" selected>必修</option>
+                        <option value="选修">选修</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class ="layui-form-label">课程学分</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="credit" name="credit" autocomplete="off" placeholder="请输入学分" required class="layui-input">
+                </div>
+            </div>
+        </form>
+        <button class="layui-btn" id="btn" style="margin-left: 90px">确定</button>
+    </div>
+
+    <div class="layui-footer">
+
+    </div>
+
+</div>
+</body>
+
+    <div id = "msg" style="width: 350px;height: 700px">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">接收者编号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="text" id = "text" required class="layui-input">
+                </div>
+            </div>
+        </form>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">文本</label>
+            <div class="layui-input-block">
+                <textarea id="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <button class="layui-btn" style="margin-left: 30px" id="send">发送消息</button>
+        <button class="layui-btn" id="receive">接收消息</button>
+        <table id="msgtab" class="layui-table">
+            <thead>
+                <tr>
+                    <th>发送者</th>
+                    <th>时间</th>
+                    <th>内容</th>
+                </tr>
+            </thead>
+            <tbody id="tab"></tbody>
+        </table>
+    </div>
+<div id = "annonce" style="width: 450px;height: 500px">
+    <div style="margin-top: 70px"></div>
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">课程编号</label>
+            <div class="layui-input-block">
+                <input type="text" name="text" id = "annon-text" required class="layui-input">
+            </div>
+        </div>
+    </form>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">公告内容</label>
+        <div class="layui-input-block">
+            <textarea id="desca" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <button class="layui-btn" style="margin-left: 300px" id="asend">发送消息</button>
+</div>
+
+
+<script src="../static/layui/layui.js"></script>
+<script src="../static/jquery-3.5.1.js"></script>
+<script>
+    $(document).ready(function (){
+        $("#msg").hide();
+        $("#annonce").hide();
+    })
+    layui.use(["element","form","laydate","table"],function (){
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#year',
+            type : 'year'
+        });
+    })
+    $("#btn").click(function (){
+        var name = $("#name").val();
+        console.log(name);
+        var department = $("#department").val();
+        console.log(department);
+        var term = $("#year").val() +"|" + $("#term").val();
+        console.log(term);
+        var time = $("#week").val() + "|" + $("#time").val();
+        console.log(time);
+        var id =$("#user_id").text();
+        console.log(id);
+        var classroom = $("#classroom").val();
+        var class_type = $("#class_type").val();
+        var credit = $("#credit").val();
+        if(isNaN(credit)){alert("学分输入错误");return;}
+        $.ajax({
+            url: "/addClass",
+            type: "post",
+            data: {
+                "name" : name,
+                "department" : department,
+                "term" : term,
+                "time" : time,
+                "teacher_id" : id,
+                "class_type" : class_type,
+                "credit" : credit,
+                "classroom": classroom
+            },
+            success: function (data){
+                alert(data);
+            }
+        })
+    })
+
+    function annonce(){
+        var layer = layui.layer;
+        layer.open({
+            title : "公告",
+            type : 1,
+            content : $("#annonce"),
+            shade : 0,
+            area: ['500px', '500px']
+        })
+    }
+    $("#asend").click(function (){
+        var receiver_id = $("#annon-text").val();
+        var text = $("#desca").val();
+        var id = $("#user_id").text();
+        $.ajax({
+            url:"addannonce",
+            data : {
+                "c_id" : receiver_id,
+                "text" : text,
+                "sid" : id
+            },
+            success: function (data){
+                alert(data);
+            }
+        })
+    })
+
+
+    function msg(){
+        var layer = layui.layer;
+        layer.open({
+            title : "消息",
+            type : 1,
+            content : $("#msg"),
+            offset:'r',
+            shade : 0
+        })
+    }
+    $("#send").click(function (){
+        var receiver_id = $("#text").val();
+        var text = $("#desc").val();
+        var id = $("#user_id").text();
+        $.ajax({
+            url:"addmsg",
+            data : {
+                "r_id" : receiver_id,
+                "text" : text,
+                "sid" : id
+            },
+            success: function (data){
+                alert(data);
+            }
+        })
+    })
+    $("#receive").click(function (){
+        var id = $("#user_id").text();
+        $.ajax({
+            url:"receive_msg",
+            data : {
+                "id" : id
+            },
+            success: function (data){
+                //alert(data[0]["sender"]);
+                var s ="";
+                for(var i = 0; i<data.length; i++){
+                    s+= "<tr><td>"+data[i]["sender"]+"</td><td>"+data[i]["time"]+"</td><td>"+data[i]["msg"]+"</td></tr>"
+                }
+                $("#tab").html(s);
+                var laytab = layui.table;
+                laytab.render();
+            }
+        })
+    })
+</script>
+
+</html>

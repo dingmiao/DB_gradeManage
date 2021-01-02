@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学生成绩管理</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+</head>
+<body class="layui-layout-body" style="overflow: hidden">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">课程管理系统</div>
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item">欢迎</li>
+            <li class="layui-nav-item" th:text="${type}" id="user_type" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe67a;</i></li>
+            <li class="layui-nav-item" th:text="${id}" id="user_id" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe67a;</i></li>
+            <li class="layui-nav-item" th:text="${t}" id="user_name" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe68e;</i></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><a href="/index"><i class="layui-icon">&#xe682;</i> 退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test" id="option">
+                <li class="layui-nav-item"></li><a th:href="@{teacher(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  课程发布</a></li>
+                <li class="layui-nav-item"></li><a th:href="@{tosetGrade(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  课程成绩</a></li>
+                <li class="layui-nav-item"></li><a th:href="@{toChangePwd(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  账号管理</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" id="contextbody">
+        <!-- 内容主体区域 -->
+        <div style="margin-top: 80px"></div>
+        <h2 style="text-align: center">修改密码</h2>
+        <form class="layui-form">
+
+            <div class="layui-form-item">
+                <label class ="layui-form-label">修改密码</label>
+                <div class="layui-input-block">
+                    <input type="password" id="pwd1" name="pwd1" autocomplete="off" placeholder="请输入新密码" required class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class ="layui-form-label">确认密码</label>
+                <div class="layui-input-block">
+                    <input type="password" id="pwd2" name="pwd2" autocomplete="off" placeholder="再输入一次密码" required class="layui-input">
+                </div>
+            </div>
+
+        </form>
+        <button id ="class_btn" class="layui-btn layui-btn-fluid" style="margin-top: 50px">确认修改</button>
+        <div class="layui-footer">
+
+        </div>
+    </div>
+    <script src="../static/layui/layui.js"></script>
+    <script src="../static/jquery-3.5.1.js"></script>
+    <script>
+        layui.use("layer",function () {
+            var layer = layui.layer;
+
+        });
+        $("#class_btn").click(function (){
+            var type = $("#user_type").text();
+            var id = $("#user_id").text();
+            var t = $("#user_name").text();
+            var pwd1 = $("#pwd1").val();
+            var pwd2 = $("#pwd2").val();
+            $.ajax({
+                url : "changepwd",
+                data: {
+                    "type" : type,
+                    "id" : id,
+                    "t" : t,
+                    "pwd1" : pwd1,
+                    "pwd2" : pwd2
+                },
+                success : function (data){
+                    alert(data);
+                }
+            })
+        })
+    </script>
+</html>

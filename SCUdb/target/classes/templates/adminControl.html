@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员系统</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../static/manage.css">
+</head>
+<body class="layui-layout-body" style="overflow: hidden">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">课程管理系统</div>
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item">欢迎</li>
+            <li class="layui-nav-item" th:text="${type}" id="user_type" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe67a;</i></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><a href="/index"><i class="layui-icon">&#xe682;</i> 退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test" id="option">
+                <li class="layui-nav-item"></li><a href="/admin"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  教师管理</a></li>
+                <li class="layui-nav-item"></li><a href="/adminControl"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  控制管理</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" id="contextbody">
+        <div style="margin-top: 60px"></div>
+        <!-- 内容主体区域 -->
+        <button id ="class_btn" class="layui-btn layui-btn-fluid">查询特殊控制代码</button>
+        <div id = "classes">
+            <table lay-filter="table">
+                <thead>
+                <tr>
+                    <th lay-data="{field:'id'}">编号</th>
+                    <th lay-data="{field:'the_key'}">代码名称</th>
+                    <th lay-data="{field:'va'}">值</th>
+                    <th lay-data="{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}">操作</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each = "c : ${res}">
+                    <td th:text = "${c.id}"></td>
+                    <td th:text = "${c.the_key}"></td>
+                    <td th:text = "${c.va}"></td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
+        </script>
+
+    </div>
+</div>
+<script src="../static/layui/layui.js"></script>
+<script src="../static/jquery-3.5.1.js"></script>
+<script>
+
+    layui.use(["form","table","layer"],function () {
+        var table = layui.table;
+        var layer = layui.layer;
+
+        table.init('table', {
+            height: 328
+            , limit: 100
+            , page: true //开启分页
+        });
+
+        table.on('tool(table)', function(obj){
+            var data = obj.data;
+            var sid = $("#user_id").text();
+            if(obj.event === 'edit'){
+                layer.prompt(
+                {title:"输入设定的值"},function(value, index, elem){
+                    $.ajax({
+                        url: "set_the_key",
+                        data: {
+                            "key" : data.the_key,
+                            "va" : value
+                        },
+                        success : function (data){
+                            alert("修改成功");
+                            obj.update({
+                                va : value
+                            })
+                        }
+                    })
+                    layer.close(index);
+
+                })
+
+            }
+        });
+    })
+    $("#class_btn").click(function (){
+        window.location.href = "/adminC";
+    })
+
+</script>
+</html>

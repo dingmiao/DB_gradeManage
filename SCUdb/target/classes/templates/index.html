@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>login</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../static/login.css">
+</head>
+<body>
+
+<div class="login" id="login-group">
+    <div style="height: 50px"></div>
+    <h1 class="form-title">
+        登录
+    </h1>
+    <form action="/1" type="post">
+        <div class="form-group">
+            <label>
+                用户账号：
+            </label>
+            <input class="input-form" type="text" autocomplete="off"
+                   placeholder="请输入账号" required id="user_name" name="user_name"/>
+        </div>
+        <div class="form-group">
+            <label>
+                登录密码：
+            </label>
+            <input class="input-form" type="password" autocomplete="off"
+                   placeholder="请输入密码" required id="user_password" name="user_password"/>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="layui-btn layui-btn-normal" id="login-btn">
+                登录账号
+            </button>
+        </div>
+    </form>
+    <div class="form-actions">
+        <button class="layui-btn layui-btn-normal" id="resign" onclick="a()">
+            注册账号
+        </button>
+    </div>
+    <p style="text-align:center;color:red" th:text="${t}"></p>
+
+
+    <div style="height: 50px"></div>
+</div>
+
+
+<div class="login" id="resign-group">
+    <div style="height: 50px"></div>
+    <div class="form-group">
+        <label>
+            用户账号：
+        </label>
+        <input class="input-form" type="text" autocomplete="off"
+               placeholder="请输入账号" required id="name" name="user_name"/>
+    </div>
+    <div class="form-group">
+        <label>
+            登录密码：
+        </label>
+        <input class="input-form" type="password" autocomplete="off"
+               placeholder="请输入密码" required id="password" name="user_password"/>
+
+    </div>
+    <div class="form-group">
+        <label>
+            确认密码：
+        </label>
+        <input class="input-form" type="password" autocomplete="off"
+               placeholder="请输入密码" required id="check_password"/>
+    </div>
+    <div class="form-group">
+        <label>
+            输入学院：
+        </label>
+        <input class="input-form" type="text" autocomplete="off"
+               placeholder="请输入学院" required id="department"/>
+    </div>
+    <div class="form-group">
+        <label>
+            输入真实姓名：
+        </label>
+        <input class="input-form"  autocomplete="off"
+               placeholder="请输入真实姓名" required id="tname"/>
+    </div>
+    <div class="form-group">
+        <label>
+            输入学校验证码：
+        </label>
+        <input class="input-form" type="password" autocomplete="off"
+               placeholder="请输入学校验证码" required id="check"/>
+    </div>
+    <div class="form-actions">
+        <button class="layui-btn layui-btn-normal" id="resign-btn">
+            注册账号
+        </button>
+    </div>
+    <div class="form-actions">
+        <button class="layui-btn layui-btn-normal" id="return-btn">
+            返回
+        </button>
+    </div>
+    <div style="height: 50px"></div>
+</div>
+</body>
+<script src="../static/layui/layui.js"></script>
+<script src="../static/jquery-3.5.1.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#resign-group").hide();
+    })
+    $("#resign").click(function () {
+        $("#login-group").hide();
+        $("#resign-group").show();
+    })
+    $("#return-btn").click(function () {
+        $("#login-group").show();
+        $("#resign-group").hide();
+    })
+
+    $("#resign-btn").click(function () {
+        var name = $("#name").val();
+        var password = $("#password").val();
+        var check_password = $("#check_password").val();
+        var department = $("#department").val();
+        var tname = $("#tname").val();
+        var check = $("#check").val();
+        $.ajax({
+
+            type: "post",
+            url: "/resign",
+            datatype: "json",
+            data: {
+                "name": name,
+                "password": password,
+                "check_password": check_password,
+                "department":department,
+                "tname" : tname,
+                "check" : check
+            },
+            success: function (data) {
+                alert(data);
+            }
+        })
+    })
+</script>
+</body>
+</html>

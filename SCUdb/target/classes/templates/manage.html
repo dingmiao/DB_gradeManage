@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>manage</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../static/manage.css">
+</head>
+<body class="layui-layout-body" style="overflow: hidden">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">课程管理系统</div>
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item">欢迎</li>
+            <li class="layui-nav-item" th:text="${type}" id="user_type" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe67a;</i></li>
+            <li class="layui-nav-item" th:text="${id}" id="user_id" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe67a;</i></li>
+            <li class="layui-nav-item" th:text="${t}" id="user_name" style="margin-left: 30px"></li>
+            <li class="layui-nav-item"><i class="layui-icon">&#xe68e;</i></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><a onclick="msg()"><i class="layui-icon">&#xe667;</i> 消息</a></li>
+            <li class="layui-nav-item"><a href="/index"><i class="layui-icon">&#xe682;</i> 退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test" id="option">
+                <li class="layui-nav-item"></li><a th:href="@{tomanage(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  选课管理</a></li>
+                <li class="layui-nav-item"></li><a th:href="@{tosearch(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  成绩查询</a></li>
+                <li class="layui-nav-item"></li><a th:href="@{toChangePwd2(type=${type},id=${id},t=${t})}"><li class="layui-nav-item"><i class="layui-icon">&#xe705;</i>  账号管理</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" id="contextbody">
+        <!-- 内容主体区域 -->
+        <div style="margin-top: 30px"></div>
+        <form class="layui-form">
+            <h1 class="layui-form-item" style="text-align: center">查询课程</h1>
+            <div class="layui-form-item">
+                <label class="layui-form-label">查询信息：</label>
+                <div class="layui-input-block">
+                    <input type="text" id="name" name="name" autocomplete="off" placeholder="输入课程名称或教师名" required class="layui-input">
+                </div>
+                <div class="layui-input-block" id="choose_search">
+                    <input type="radio" name="t" value="0" title="按教师名查询">
+                    <input type="radio" name="t" value="1" title="按课程名查询" checked>
+                </div>
+            </div>
+        </form>
+        <button id ="btn" class="layui-btn layui-btn-fluid layui-btn-radius">搜索</button>
+
+        <table lay-filter="demo">
+            <thead>
+            <tr>
+                <th lay-data="{field:'id'}">编号</th>
+                <th lay-data="{field:'department'}">学院</th>
+                <th lay-data="{field:'class_name'}">课程名</th>
+                <th lay-data="{field:'teacher_name'}">教师姓名</th>
+                <th lay-data="{field:'teacher_id'}">教师工号</th>
+                <th lay-data="{field:'term',sort: true}">学期</th>
+                <th lay-data="{field:'time',sort: true}">时间</th>
+                <th lay-data="{field:'classroom'}">教室</th>
+                <th lay-data="{field:'type',sort: true}">课程属性</th>
+                <th lay-data="{field:'credit'}">学分</th>
+                <th lay-data="{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}">操作</th>
+
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each = "c : ${res}">
+                    <td th:text = "${c.id}"></td>
+                    <td th:text = "${c.department}"></td>
+                    <td th:text = "${c.class_name}"></td>
+                    <td th:text = "${c.teacher_name}"></td>
+                    <td th:text = "${c.teacher_id}"></td>
+                    <td th:text = "${c.term}"></td>
+                    <td th:text = "${c.time}"></td>
+                    <td th:text = "${c.classroom}"></td>
+                    <td th:text = "${c.type}"></td>
+                    <td th:text = "${c.credit}"></td>
+
+                </tr>
+            </tbody>
+        </table>
+
+
+        <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-xs" lay-event="choose">选课</a>
+        </script>
+
+    </div>
+
+    <div class="layui-footer">
+
+    </div>
+</div>
+</body>
+
+<div id = "msg" style="width: 350px;height: 700px">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">接收者编号</label>
+            <div class="layui-input-block">
+                <input type="text" name="text" id = "text" required class="layui-input">
+            </div>
+        </div>
+    </form>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">文本</label>
+        <div class="layui-input-block">
+            <textarea id="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <button class="layui-btn" style="margin-left: 30px" id="send">发送消息</button>
+    <button class="layui-btn" id="receive">接收消息</button>
+    <table id="msgtab" class="layui-table">
+        <thead>
+        <tr>
+            <th>发送者</th>
+            <th>时间</th>
+            <th>内容</th>
+        </tr>
+        </thead>
+        <tbody id="tab"></tbody>
+    </table>
+</div>
+
+
+<script src="../static/layui/layui.js"></script>
+<script src="../static/jquery-3.5.1.js"></script>
+<script>
+    $(document).ready(function (){
+        $("#msg").hide();
+    })
+
+    layui.use(["form","table","layer"],function (){
+        var table = layui.table;
+        var layer = layui.layer;
+
+        table.init('demo', {
+            height: 600
+            ,limit: 100
+            ,page: true //开启分页
+            ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            ,defaultToolbar: ['filter', 'exports']
+        });
+
+        table.on('toolbar(demo)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：'+ data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    break;
+
+            };
+        });
+        //监听行工具事件
+        table.on('tool(demo)', function(obj){
+            var data = obj.data;
+            var sid = $("#user_id").text();
+            if(obj.event === 'choose'){
+                layer.open({
+                    content: '确定选择该课程吗?'
+                    ,title : "confirm"
+                    ,btn: ['确定选课', '取消',]
+                    ,yes: function(index, layero){
+                        //按钮【按钮一】的回调
+                        $.ajax({
+                            url:"chooseClass",
+                                data:{
+                                    "sid" : sid,
+                                    "class_id" : data.id
+                            },
+                            success : function (data){
+                                alert(data);
+                        }
+                    })
+                        layer.close(index);
+                    }
+                });
+
+            }
+        });
+    })
+    $("#btn").click(function (){
+        var name = $("#name").val();
+        var type = $("#user_type").text();
+        var id = $("#user_id").text();
+        var t = $("#user_name").text();
+        var choose = $("#choose_search input[name='t']:checked").val();
+        if(choose == 1)
+            window.location.href = "/findClassByName?className="+name+"&type="+type+"&id="+id+"&t="+t;
+        else
+            window.location.href = "/findClassByTeacher?className="+name+"&type="+type+"&id="+id+"&t="+t;
+    })
+
+    function msg(){
+        var layer = layui.layer;
+        layer.open({
+            title : "消息",
+            type : 1,
+            content : $("#msg"),
+            offset:'r',
+            shade : 0
+        })
+    }
+    $("#send").click(function (){
+        var receiver_id = $("#text").val();
+        var text = $("#desc").val();
+        var id = $("#user_id").text();
+        $.ajax({
+            url:"addmsg",
+            data : {
+                "r_id" : receiver_id,
+                "text" : text,
+                "sid" : id
+            },
+            success: function (data){
+                alert(data);
+            }
+        })
+    })
+    $("#receive").click(function (){
+        var id = $("#user_id").text();
+        $.ajax({
+            url:"receive_msg",
+            data : {
+                "id" : id
+            },
+            success: function (data){
+                //alert(data[0]["sender"]);
+                var s ="";
+                for(var i = 0; i<data.length; i++){
+                    s+= "<tr><td>"+data[i]["sender"]+"</td><td>"+data[i]["time"]+"</td><td>"+data[i]["msg"]+"</td></tr>"
+                }
+                $("#tab").html(s);
+                var laytab = layui.table;
+                laytab.render();
+            }
+        })
+    })
+</script>
+</html>
